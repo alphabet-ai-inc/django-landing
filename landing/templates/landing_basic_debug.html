@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+
+{% block content %}
+    <h1>DEBUG MODE</h1>
+    <p>Root elements count: {{ root_elements|length }}</p>
+    <hr>
+    {% recursetree root_elements %}
+        <div style="border: 2px solid red; margin: 10px; padding: 10px;">
+            <strong>Element ID:</strong> {{ node.id }}<br>
+            <strong>Element Type:</strong> {{ node.type }}<br>
+            <strong>CSS Classes:</strong> {{ node.css_classes }}<br>
+            <strong>Content:</strong> {{ node.content }}<br>
+            <strong>Props:</strong> {{ node.props }}<br>
+            <strong>Is Leaf:</strong> {{ node.is_leaf_node }}<br>
+            <strong>Children Count:</strong> {{ node.children.count }}<br>
+            {% if not node.is_leaf_node %}
+                <h3>Children:</h3>
+                {{ children }}
+            {% endif %}
+        </div>
+    {% endrecursetree %}
+
+{% endblock %}

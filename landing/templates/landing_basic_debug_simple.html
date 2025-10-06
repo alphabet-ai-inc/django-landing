@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>DEBUG MODE</h1>
+    <p>Root elements count: {{ root_elements|length }}</p>
+
+    <hr>
+
+    {% for element in root_elements %}
+        <div style="border: 2px solid red; margin: 10px; padding: 10px;">
+            <strong>Element Type:</strong> {{ element.type }}<br>
+            <strong>CSS Classes:</strong> {{ element.css_classes }}<br>
+            <strong>Content:</strong> {{ element.content }}<br>
+            <strong>Props:</strong> {{ element.props }}<br>
+            <strong>Is Leaf:</strong> {{ element.is_leaf_node }}<br>
+            <strong>Children Count:</strong> {{ element.get_children.count }}<br>
+
+            {% if not element.is_leaf_node %}
+                <div style="margin-left: 20px; border-left: 2px solid blue; padding-left: 10px;">
+                    <h3>Children:</h3>
+                    {% for child in element.get_children %}
+                        <div style="background: #f0f0f0; margin: 5px; padding: 5px;">
+                            <strong>Child ID:</strong> {{ child.id }}<br>
+                            <strong>Child Type:</strong> {{ child.type }}<br>
+                            <strong>Content:</strong> {{ child.content|truncatewords:100 }}<br>
+                            <strong>Props:</strong> {{ child.props }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endblock %}

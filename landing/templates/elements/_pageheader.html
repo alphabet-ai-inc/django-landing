@@ -1,0 +1,11 @@
+{% load mptt_tags element_tags %}
+<header class="{{ element.css_classes }}" style="{% if element.props.background_image %}background-image: url({{ element.props.background_image }});{% endif %}">
+    {% recursetree element.children.all %}
+        {% with element=node template_path=node|get_partial_template %}
+            {% include template_path %}
+        {% endwith %}
+        {% if not node.is_leaf_node %}
+            {{ children }}
+        {% endif %}
+    {% endrecursetree %}
+</header>

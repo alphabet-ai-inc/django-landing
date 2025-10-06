@@ -1,0 +1,4 @@
+{% load static %}
+{% if element.image %}
+<img src="{{ element.image.url }}" alt="{{ element.html_attrs.alt|default:'' }}" class="{{ element.css_classes }}">
+{% endif %}

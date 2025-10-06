@@ -1,0 +1,16 @@
+{% if element.props.ordered %}
+    <ol>
+{% else %}
+    <ul>
+{% endif %}
+    {% for item in element.props.items %}
+        <li>{{ item.text }}</li>
+        {% if item.subitems %}
+            <ul>
+                {% for sub in item.subitems %}
+                    <li>{{ sub.text }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endfor %}
+{% if element.props.ordered %}</ol>{% else %}</ul>{% endif %}

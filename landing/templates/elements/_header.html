@@ -6,7 +6,6 @@
 {% else %}
     <header class="{{ element.css_classes }}" style="{% if element.props.background_image %}background-image: url({{ element.props.background_image }});{% endif %}">
         {% if element.children.exists %}
-            <div class="children-container">
                 {% recursetree element.children.all %}
                     {% with element=node template_path=node|get_partial_template %}
                         {% include template_path %}
@@ -15,7 +14,6 @@
                         {{ children }}
                     {% endif %}
                 {% endrecursetree %}
-            </div>
         {% endif %}
     </header>
 {% endif %}

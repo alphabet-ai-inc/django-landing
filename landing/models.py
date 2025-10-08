@@ -58,7 +58,7 @@ class PageElement(MPTTModel):
         ordering = ['order']
 
     def __str__(self):
-        return f"{self.get_tag()} ({self.type}) for {self.page.title}"
+        return f"{self.get_tag()} ({self.type}) for {self.page.title} id {self.id}"
 
     def get_render_props(self):
         if self.type == 'image':

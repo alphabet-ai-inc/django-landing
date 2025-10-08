@@ -30,7 +30,7 @@ class PageAdmin(SortableAdminBase, admin.ModelAdmin):  # Изменено: до�
 
 @admin.register(PageElement)
 class PageElementAdmin(MPTTModelAdmin, SortableInlineAdminMixin):
-    list_display = ('type', 'page', 'content_preview', 'css_classes', 'order')
+    list_display = ('id', 'type', 'page', 'content_preview', 'css_classes', 'order')
     list_filter = ('type', 'page', 'parent')
     search_fields = ('content', 'css_classes')
     sortable_by = ('order',)

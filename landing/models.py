@@ -27,6 +27,7 @@ class PageElement(MPTTModel):
     ELEMENT_TYPES = (
         ('body', 'Body (page)'), # tag body
         ('pageheader', 'Header (page)'), # tag header
+        ('legend', 'Legend'), # tag legend
         ('header', 'Header (h1-h6)'),  # props: {'level': 1-6}
         ('text', 'Text/Paragraph'),  # Simple p с content
         ('image', 'Image'),  # props: {'alt': '...', 'size': 'full/small'}

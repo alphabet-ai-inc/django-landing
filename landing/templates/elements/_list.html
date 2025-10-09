@@ -1,16 +1,27 @@
-{% if element.props.ordered %}
-    <ol>
-{% else %}
-    <ul>
-{% endif %}
-    {% for item in element.props.items %}
-        <li>{{ item.text }}</li>
-        {% if item.subitems %}
-            <ul>
-                {% for sub in item.subitems %}
-                    <li>{{ sub.text }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endfor %}
-{% if element.props.ordered %}</ol>{% else %}</ul>{% endif %}
+  {% load mptt_tags element_tags %}
+  {% if element.props.ordered %}
+      <ol class="{{ element.css_classes }}" {% for key, value in element.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>
+  {% else %}
+      <ul class="{{ element.css_classes }}" {% for key, value in element.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>
+  {% endif %}
+      {% spaceless %}
+          {% recursetree element.children.all %}
+              {% if node.type == 'container' %}
+                  <li class="{{ node.css_classes }}" {% for key, value in node.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>
+                      {{ node.content|safe }}
+                      {% if not node.is_leaf_node %}
+                          {% recursetree node.children.all %}
+                              {% with element=node template_path=node|get_partial_template %}
+                                  {% include template_path %}
+                              {% endwith %}
+                          {% endrecursetree %}
+                      {% endif %}
+                  </li>
+              {% elif node.type == 'button' %}
+                  <li class="{{ node.css_classes }}" {% for key, value in node.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>
+                      <a href="{{ node.props.href }}" class="{{ node.css_classes }}">{{ node.content|safe }}</a>
+                  </li>
+              {% endif %}
+          {% endrecursetree %}
+      {% endspaceless %}
+  {% if element.props.ordered %}</ol>{% else %}</ul>{% endif %}

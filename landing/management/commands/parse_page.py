@@ -135,7 +135,8 @@ class Command(BaseCommand):
         tag_to_type = {
             'body': 'body',
             'header': 'pageheader',
-            'h1': 'header', 'h2': 'header', 'h3': 'header',
+            'legend': 'legend',
+            'h1': 'header', 'h2': 'header', 'h3': 'header', 'h4': 'header',
             'p': 'text', 'span': 'text',
             'img': 'image',
             'div': 'container', 'section': 'section',
@@ -159,7 +160,7 @@ class Command(BaseCommand):
         # Set props
         props = {}
         if el_type == 'header':
-            props['level'] = int(elem.name[1]) if elem.name in ('h1', 'h2', 'h3') else 2
+            props['level'] = int(elem.name[1]) if elem.name in ('h1', 'h2', 'h3', 'h4') else 2
         elif el_type == 'pageheader':
             style = elem.get('style', '')
             if 'background-image' in style:
@@ -175,19 +176,22 @@ class Command(BaseCommand):
                         with open(media_file_path, 'wb') as f:
                             f.write(requests.get(bg_url).content)
                         props['background_image'] = f"/media/page_{page.slug}/images/{os.path.basename(local_path)}"
+        elif el_type == 'legend':
+            content = elem.get_text(strip=True)
         elif el_type == 'grid':
             col_count = len([child for child in children if 'col' in ' '.join(child.get('class', [])).lower()])
             props['columns'] = max(col_count, 1)
         elif el_type == 'card':
             props['layout'] = 'vertical'
         elif el_type == 'list':
-            props['ordered'] = elem.name == 'ol'
-            props['items'] = [{'text': li.get_text().strip()} for li in elem.find_all('li', recursive=False)]
+            pass
+            # props['ordered'] = elem.name == 'ol'
+            # props['items'] = [{'text': li.get_text().strip()} for li in elem.find_all('li', recursive=False)]
         elif el_type == 'button' and elem.name == 'a':
             props['href'] = elem.get('href', '')
 
         # Content: text + inline HTML
-        content = ''.join(str(child) for child in elem.contents if child.name is None or child.name in ['span', 'strong', 'em'])
+        content = ''.join(str(child) for child in elem.contents if child.name is None or child.name in ['span', 'strong', 'em', 'b'])
         content = content.strip()
 
         # HTML attrs
@@ -218,7 +222,7 @@ class Command(BaseCommand):
             # Пропускаем создание PageElement для body, но сохраняем классы для шаблона
             children_order = 0
             for child in elem.children:
-                if child.name and child.name not in ['span', 'strong', 'em']:
+                if child.name and child.name not in ['span', 'strong', 'em', 'b']:
                     self._build_tree(child, page, parent, children_order, css_files, base_url, static_base)
                     children_order += 1
             return [] if parent is None else []
@@ -240,7 +244,7 @@ class Command(BaseCommand):
         # Recurse for children
         children_order = 0
         for child in elem.children:
-            if child.name and child.name not in ['span', 'strong', 'em']:
+            if child.name and child.name not in ['span', 'strong', 'em', 'b']:
                 self._build_tree(child, page, pe, children_order, css_files, base_url, static_base)
                 children_order += 1
 

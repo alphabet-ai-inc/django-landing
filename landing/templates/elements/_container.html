@@ -5,7 +5,7 @@
         {% with element=node template_path=node|get_partial_template %}
             {% include template_path %}
         {% endwith %}
-        {% if not node.is_leaf_node %}
+        {% if not node.is_leaf_node and node.type not in 'container,card,grid,section,list' %}
             {{ children }}
         {% endif %}
     {% endrecursetree %}

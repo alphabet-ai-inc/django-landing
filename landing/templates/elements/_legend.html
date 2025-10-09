@@ -1,5 +1,5 @@
 {% load mptt_tags element_tags %}
-<div class="{{ element.css_classes }}" {% for key, value in element.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>
+<legend class="{{ element.css_classes }}" {% for key, value in element.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>
   {{ element.content|safe }}
   {% recursetree element.children.all %}
       {% with element=node template_path=node|get_partial_template %}
@@ -9,4 +9,4 @@
           {{ children }}
       {% endif %}
   {% endrecursetree %}
-</div>
+</legend>

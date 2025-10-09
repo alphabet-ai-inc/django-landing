@@ -1,6 +1,6 @@
 {% if element.props.href %}
     <a href="{{ element.props.href }}" class="btn {{ element.css_classes }}">
-        {{ element.content|default:"Link" }}
+        {{ element.content|default:"" }}
     </a>
 {% else %}
     <button type="{{ element.props.type|default:'button' }}" class="btn {{ element.css_classes }}">

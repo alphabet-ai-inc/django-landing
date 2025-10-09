@@ -1,0 +1,9 @@
+{% load mptt_tags element_tags %}
+<label for="{{ element.props.for }}" class="{{ element.css_classes }}" {% for key, value in element.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>
+  {{ element.content|safe }}
+  {% recursetree element.children.all %}
+      {% with element=node template_path=node|get_partial_template %}
+          {% include template_path %}
+      {% endwith %}
+  {% endrecursetree %}
+</label>

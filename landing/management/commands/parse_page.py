@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils.text import slugify
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 import cssutils
 from urllib.parse import urljoin, urlparse
 from landing.models import Page, PageElement
@@ -136,11 +136,16 @@ class Command(BaseCommand):
             'body': 'body',
             'header': 'pageheader',
             'legend': 'legend',
+            'form': 'form',
+            'label': 'label',
+            'input': 'input',
+            'textarea': 'textarea',
             'h1': 'header', 'h2': 'header', 'h3': 'header', 'h4': 'header',
             'p': 'text', 'span': 'text',
             'img': 'image',
             'div': 'container', 'section': 'section',
             'ul': 'list', 'ol': 'list',
+            'li': 'list_item',
             'a': 'button', 'button': 'button',
         }
         classes = ' '.join(elem.get('class', [])).lower()
@@ -176,6 +181,19 @@ class Command(BaseCommand):
                         with open(media_file_path, 'wb') as f:
                             f.write(requests.get(bg_url).content)
                         props['background_image'] = f"/media/page_{page.slug}/images/{os.path.basename(local_path)}"
+        elif el_type == 'form':
+            props['action'] = elem.get('action', '')
+            props['method'] = elem.get('method', 'get').upper()
+        elif el_type == 'label':
+            props['for'] = elem.get('for', '')
+            # content = ''.join(str(child) for child in elem.contents)
+        elif el_type == 'input':
+            props['type'] = elem.get('type', 'text')
+            props['id'] = elem.get('id', '')
+            props['name'] = elem.get('name', '')
+        elif el_type == 'textarea':
+            props['id'] = elem.get('id', '')
+            props['name'] = elem.get('name', '')
         elif el_type == 'legend':
             content = elem.get_text(strip=True)
         elif el_type == 'grid':
@@ -184,14 +202,27 @@ class Command(BaseCommand):
         elif el_type == 'card':
             props['layout'] = 'vertical'
         elif el_type == 'list':
+            props['ordered'] = elem.name == 'ol'
+        elif el_type == 'list_item':
             pass
-            # props['ordered'] = elem.name == 'ol'
-            # props['items'] = [{'text': li.get_text().strip()} for li in elem.find_all('li', recursive=False)]
+            # content = ''.join(
+            #     str(child)
+            #     for child in elem.contents
+            #     if child.name is None and not isinstance(child, Comment)
+            #     or child.name in ['span', 'strong', 'em', 'b']
+            # ).strip()
         elif el_type == 'button' and elem.name == 'a':
             props['href'] = elem.get('href', '')
 
         # Content: text + inline HTML
-        content = ''.join(str(child) for child in elem.contents if child.name is None or child.name in ['span', 'strong', 'em', 'b'])
+        # content = ''.join(str(child) for child in elem.contents if child.name is None or child.name in ['span', 'strong', 'em', 'b'])
+        content = ''.join(
+            str(child)
+            for child in elem.contents
+            if child.name is None
+            and not isinstance(child, Comment)
+            or child.name in ['span', 'strong', 'em', 'b', 'input']
+        )
         content = content.strip()
 
         # HTML attrs
@@ -222,7 +253,7 @@ class Command(BaseCommand):
             # Пропускаем создание PageElement для body, но сохраняем классы для шаблона
             children_order = 0
             for child in elem.children:
-                if child.name and child.name not in ['span', 'strong', 'em', 'b']:
+                if child.name and child.name not in ['span', 'strong', 'em', 'b', 'input']:
                     self._build_tree(child, page, parent, children_order, css_files, base_url, static_base)
                     children_order += 1
             return [] if parent is None else []
@@ -244,7 +275,7 @@ class Command(BaseCommand):
         # Recurse for children
         children_order = 0
         for child in elem.children:
-            if child.name and child.name not in ['span', 'strong', 'em', 'b']:
+            if child.name and child.name not in ['span', 'strong', 'em', 'b', 'input']:
                 self._build_tree(child, page, pe, children_order, css_files, base_url, static_base)
                 children_order += 1
 

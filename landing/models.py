@@ -35,8 +35,13 @@ class PageElement(MPTTModel):
         ('grid', 'Grid Container'),  # div with columns, props: {'columns': 2/3, 'gap': 'md'}
         ('card', 'Card/Block'),  # div for services (h3 + p + img)
         ('list', 'List (ul/ol)'),  # props: {'ordered': True, 'items': [{'text': '...', 'subitems': [...]}]}
+        ('list_item', 'List item'),
         ('button', 'Button/Link'),  # props: {'href': '...', 'type': 'submit', 'text': '...'}
         ('section', 'Section'),  # section for large blocks
+        ('form', 'Form'),
+        ('label', 'Label'),
+        ('input', 'Input'),
+        ('textarea', 'TextArea'),
     )
 
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='elements')

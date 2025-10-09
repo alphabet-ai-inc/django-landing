@@ -1,12 +1,16 @@
 {% load mptt_tags element_tags %}
 <div class="{{ element.css_classes }}" {% for key, value in element.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>
+  {% if element.content %}
     {{ element.content|safe }}
+  {% endif %}
+  {% spaceless %}
     {% recursetree element.children.all %}
         {% with element=node template_path=node|get_partial_template %}
             {% include template_path %}
         {% endwith %}
-        {% if not node.is_leaf_node and node.type not in 'container,card,grid,section,list' %}
+        {% if not node.is_leaf_node and node.type not in 'container,card,grid,section,list,form' %}
             {{ children }}
         {% endif %}
     {% endrecursetree %}
-</div>
+  {% endspaceless %}
+  </div>

@@ -1,0 +1,1 @@
+<textarea id="{{ element.props.id }}" name="{{ element.props.name }}" class="{{ element.css_classes }}" {% for key, value in element.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %}>{{ element.content|safe }}</textarea>

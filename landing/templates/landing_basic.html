@@ -1,3 +1,4 @@
+```django
   {% extends 'base.html' %}
   {% load mptt_tags element_tags static %}
 
@@ -12,10 +13,9 @@
       {% recursetree root_elements %}
           <!-- {{ node.get_tag }}{% if node.css_classes %} class="{{ node.css_classes }}{% if node.type == 'grid' %} grid grid-cols-{{ node.props.columns }}{% endif %}"{% endif %}{% for key, value in node.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %} -->
           {% with element=node template_path=node|get_partial_template %}
-        <p>begin {{ template_path }}</p>
               {% include template_path %}
           {% endwith %}
-          {% if not node.is_leaf_node and node.type not in 'pageheader,container,card,grid,section,list' %}
+          {% if not node.is_leaf_node and node.type not in 'pageheader,container,card,grid,section,list,form' %}
               {{ children }}
           {% endif %}
           </{{ node.get_tag }}>

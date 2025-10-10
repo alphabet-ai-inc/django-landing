@@ -158,7 +158,7 @@ class Command(BaseCommand):
                 (elem.name == 'div' and has_header and has_text):
             el_type = 'card'
         elif elem.name == 'div' and parent and parent.type == 'pageheader':
-            el_type = 'container'  # Сохраняем как container для div внутри header
+            el_type = 'container'  # Save as a container for a div inside the header
         else:
             el_type = tag_to_type.get(elem.name, 'container')
 
@@ -205,17 +205,9 @@ class Command(BaseCommand):
             props['ordered'] = elem.name == 'ol'
         elif el_type == 'list_item':
             pass
-            # content = ''.join(
-            #     str(child)
-            #     for child in elem.contents
-            #     if child.name is None and not isinstance(child, Comment)
-            #     or child.name in ['span', 'strong', 'em', 'b']
-            # ).strip()
         elif el_type == 'button' and elem.name == 'a':
             props['href'] = elem.get('href', '')
 
-        # Content: text + inline HTML
-        # content = ''.join(str(child) for child in elem.contents if child.name is None or child.name in ['span', 'strong', 'em', 'b'])
         content = ''.join(
             str(child)
             for child in elem.contents
@@ -250,7 +242,7 @@ class Command(BaseCommand):
         # CSS classes
         css_classes = ' '.join(html_attrs.pop('class', []))
         if el_type == 'body':
-            # Пропускаем создание PageElement для body, но сохраняем классы для шаблона
+            # Skip creating PageElement for body, but save classes for template
             children_order = 0
             for child in elem.children:
                 if child.name and child.name not in ['span', 'strong', 'em', 'b', 'input']:

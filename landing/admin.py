@@ -9,12 +9,12 @@ from .models import Page, PageElement
 class PageElementInline(SortableInlineAdminMixin, admin.TabularInline):
     model = PageElement
     extra = 1
-    fields = ('type', 'content_preview', 'image', 'css_classes', 'order', 'parent')
+    fields = ('type', 'content', 'image', 'css_classes', 'order')
     readonly_fields = ('content_preview',)
 
     def content_preview(self, obj):
         if obj.type == 'image' and obj.image:
-            return format_html('<img src="{}" width="50" />', obj.image.url)
+            return format_html('<img src="{}" width="50" />', obj.image.url) # noqa
         return mark_safe(obj.content[:50] + '...' if obj.content and len(obj.content) > 50 else obj.content)
 
     content_preview.short_description = 'Content Preview'

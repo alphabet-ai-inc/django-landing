@@ -1,0 +1,70 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  .import-form {
+    max-width: 800px;
+  }
+  .import-form input[type="url"] {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+  }
+  .info-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-left: 4px solid #417690;
+  }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:landing_page_changelist' %}">Pages</a>
+  &rsaquo; {% trans 'Import from URL' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <form method="post" class="import-form">
+    {% csrf_token %}
+
+    <fieldset class="module aligned">
+      <h2>{% trans "Import Page from URL" %}</h2>
+
+      <div class="form-row">
+        <div>
+          <label for="id_url">{% trans "Page URL" %}:</label>
+          <input type="url" name="url" id="id_url"
+                 placeholder="https://example.com/page"
+                 required
+                 class="vURLField">
+          <p class="help">{% trans "Enter the URL of the page you want to import" %}</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="submit-row">
+      <input type="submit" value="{% trans 'Import Page' %}" class="default" />
+      <p class="deletelink-box">
+        <a href="{% url 'admin:landing_page_changelist' %}">{% trans 'Cancel' %}</a>
+      </p>
+    </div>
+  </form>
+
+  <div class="info-box">
+    <h3>{% trans "How it works:" %}</h3>
+    <ul>
+      <li>{% trans "Enter the URL of the page you want to import" %}</li>
+      <li>{% trans "The system will download the HTML, CSS, and images" %}</li>
+      <li>{% trans "A new Page will be created with all elements" %}</li>
+      <li>{% trans "If a page with the same slug exists, it will be replaced" %}</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

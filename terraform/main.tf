@@ -10,6 +10,7 @@ module "linode_instances" {
   infra_backend_state_key = var.infra_backend_state_key
   github_token_vault_path = var.github_token_vault_path
   env = var.env
+  node_name_prefix = var.node_name_prefix
 }
 
 data "vault_generic_secret" "github_token" {

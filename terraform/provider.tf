@@ -2,7 +2,7 @@ terraform {
   required_providers {
     linode = {
       source  = "linode/linode"
-      version = "2.40.0"
+      version = "3.4.0"
     }
     # Set GitHub provider
     github = {

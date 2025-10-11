@@ -1,16 +1,16 @@
 node_count              = 1
-node_name_prefix        = "worker-node"
+node_name_prefix        = "django-landing"
 image_id                = "linode/ubuntu24.04"
 region                  = "us-ord"
 infra_backend_state_key = "states/infra/dev/tfstate"
 authorized_users        = ["jpassano", "ssouchkov"]
-server_group_name       = "landing_dev"
+server_group_name       = "django_landing_dev"
 env                     = "dev"
 
 app = [
   {
     name      = "django_landing"
-    url       = "https://github.com/SergueiMoscow/django-landing"
+    url       = "https://github.com/alphabet-ai-inc/django-landing"
     directory = "/app/django-landing"
     commands  = [
       "git checkout main",

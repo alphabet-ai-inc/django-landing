@@ -1,6 +1,7 @@
 services:
-  postgres:
+  db:
     image: postgres:18
+    container_name: django-landing-db
     environment:
       POSTGRES_DB: django_landing
       POSTGRES_PASSWORD: django_landing
@@ -8,7 +9,8 @@ services:
     ports:
       - "5432:5432"
 
-  backend:
+  app:
+    container_name: django-landing-app
     build:
       context: .
     volumes:
@@ -20,11 +22,12 @@ services:
       - migrations
 
   migrations:
+    container_name: django-landing-migrations
     build:
       context: .
     command: ["python", "manage.py", "migrate", "--no-input"]
     restart: "no"
     depends_on:
-      - postgres
+      - db
     volumes:
       - ./:/app

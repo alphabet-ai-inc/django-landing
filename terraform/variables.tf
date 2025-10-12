@@ -103,3 +103,21 @@ variable "vault_url" {
   type    = string
   default = "https://vault.sushkovs.ru"
 }
+
+variable "domain_name" {
+  type        = string
+  description = "Base domain name (e.g., example.com)"
+  default     = ""
+}
+
+variable "domain_prefix" {
+  type        = string
+  description = "Subdomain prefix for third-level domain (e.g., app for app.example.com)"
+  default     = ""
+}
+
+variable "domain_ip" {
+  type        = string
+  description = "IP address to assign to the subdomain (e.g., the IP of a Linode instance)"
+  default     = ""
+}

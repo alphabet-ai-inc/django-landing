@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: django_landing
       POSTGRES_USER: django_landing
     ports:
-      - "5432:5432"
+      - "${DATABASE_EXTERNAL_PORT}:${DATABASE_PORT}"
 
   app:
     container_name: django-landing-app
@@ -20,6 +20,7 @@ services:
     depends_on:
       - db
       - migrations
+
 
   migrations:
     container_name: django-landing-migrations

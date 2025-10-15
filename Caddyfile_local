@@ -1,9 +1,4 @@
-{
-    email jpassano@gmail.com
-    auto_https disable_redirects
-}
-
-landing_dev.aztech-ai.com {
+localhost:80 {
     # Static files
     @static {
         path /static/*
@@ -12,6 +7,7 @@ landing_dev.aztech-ai.com {
         root * /app/staticfiles
         file_server
     }
+
     # Media files
     @media {
         path /media/*
@@ -20,6 +16,7 @@ landing_dev.aztech-ai.com {
         root * /app/media
         file_server
     }
+
     # Django
     reverse_proxy app:8000
 }

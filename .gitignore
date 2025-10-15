@@ -142,3 +142,5 @@ GitHub.sublime-settings
 .terraform
 *.tfstate
 *.lock.hcl
+dev_env.json
+dev_prod.json

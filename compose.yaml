@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: django_landing
       POSTGRES_USER: django_landing
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U django_landing -d django_landing" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME" ]
     ports:
       - "${DATABASE_EXTERNAL_PORT}:${DATABASE_PORT}"
     networks:
@@ -19,8 +19,10 @@ services:
       context: .
     volumes:
       - ./:/app
-    expose:
-      - "8000"
+#    expose:
+#      - "8000"
+    ports:
+      - "8000:8000"
     depends_on:
       - db
       - migrations

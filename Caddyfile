@@ -1,0 +1,21 @@
+email jpassano@gmail.com
+landing_dev.aztech-ai.com {
+    # Статические файлы
+    @static {
+        path /static/*
+    }
+    handle @static {
+        root * /app/staticfiles
+        file_server
+    }
+    # Медиа файлы
+    @media {
+        path /media/*
+    }
+    handle @media {
+        root * /app/media
+        file_server
+    }
+    # Всё остальное -> Django
+    reverse_proxy app:8000
+}

@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: django_landing
     ports:
       - "${DATABASE_EXTERNAL_PORT}:${DATABASE_PORT}"
+    networks:
+      - django-landing-network
 
   app:
     container_name: django-landing-app
@@ -15,12 +17,13 @@ services:
       context: .
     volumes:
       - ./:/app
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       - db
       - migrations
-
+    networks:
+      - django-landing-network
 
   migrations:
     container_name: django-landing-migrations
@@ -32,3 +35,44 @@ services:
       - db
     volumes:
       - ./:/app
+    networks:
+      - django-landing-network
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: django-landing-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./staticfiles:/app/staticfiles:ro
+      - ./media:/app/media:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - django-landing-network
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: django-landing-portainer
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - django-landing-network
+
+volumes:
+  caddy_data:
+  caddy_config:
+  portainer_data:
+
+networks:
+  django-landing-network:
+    driver: bridge

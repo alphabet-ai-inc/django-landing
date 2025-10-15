@@ -6,6 +6,8 @@ services:
       POSTGRES_DB: django_landing
       POSTGRES_PASSWORD: django_landing
       POSTGRES_USER: django_landing
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U django_landing -d django_landing" ]
     ports:
       - "${DATABASE_EXTERNAL_PORT}:${DATABASE_PORT}"
     networks:
@@ -55,18 +57,6 @@ services:
       - app
     networks:
       - django-landing-network
-
-#  portainer:
-#    image: portainer/portainer-ce:latest
-#    container_name: django-landing-portainer
-#    restart: always
-#    ports:
-#      - "9000:9000"
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - portainer_data:/data
-#    networks:
-#      - django-landing-network
 
 volumes:
   caddy_data:

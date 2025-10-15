@@ -12,13 +12,10 @@ RUN pip install --no-cache-dir poetry && \
 # Code
 COPY . /app
 
-# Установка netcat для create_schema.sh
+# Install netcat for create_schema.sh
 RUN apt-get update && \
     apt-get install -y --no-install-recommends netcat-openbsd && \
     rm -rf /var/lib/apt/lists/*
-
-# Static files
-RUN python manage.py collectstatic --noinput
 
 # DB Schema
 # RUN ./create_schema.sh

@@ -26,10 +26,9 @@ env.read_env(str(BASE_DIR / '.env'))
 SECRET_KEY = 'django-insecure-4qp+(jrc-y#=f2chfy7e8c8ok9*m#k8nv8kvow5(74@)jmnflv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = (os.getenv('DEBUG', 'False') == 'True')
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # Application definition
 

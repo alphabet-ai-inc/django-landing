@@ -15,12 +15,12 @@ services:
     depends_on:
       - app
     networks:
-      - django-landing-network
+      - django-landing_network
 
 volumes:
   caddy_data:
   caddy_config:
 
 networks:
-  django-landing-network:
+  django-landing_network:
     external: true

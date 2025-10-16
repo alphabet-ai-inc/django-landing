@@ -6,26 +6,12 @@
 
 set -e
 
-echo "🔍 Get data from Terraform outputs..."
-
-# Go to terraform directory
-cd terraform || { echo "Ошибка: директория terraform/ не найдена"; exit 1; }
-
-# Get outputs JSON
-outputs=$(terraform output -json 2>/dev/null) || { echo "Ошибка: terraform output не выполнен. Запустите terraform apply сначала"; exit 1; }
-
-DOMAIN=$(echo "$outputs" | jq -r '.domain.value // empty')
-VM_IP=$(echo "$outputs" | jq -r '.ips.value[0] // empty')
-
-# Return to project root
-cd ..
-
 echo "🌐 DOMAIN: $DOMAIN"
 echo "💻 VM_IP:  $VM_IP"
 
 # Check values
 if [ -z "$DOMAIN" ] || [ -z "$VM_IP" ]; then
-    echo "❌ Error: Unable to get DOMAIN or VM_IP from terraform outputs"
+    echo "❌ Error: Unable to get DOMAIN or VM_IP from env variables"
     echo "   Verify that outputs.tf contains:"
     echo "   output \"domain\" { value = module.linode_domain.domain_name }"
     echo "   output \"ips\" { value = module.linode_instances.instance_ips }"

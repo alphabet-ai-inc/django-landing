@@ -4,6 +4,9 @@
 }
 
 landing_dev.aztech-ai.com {
+    log {
+        output stdout
+    }
     # Static files
     @static {
         path /static/*
@@ -23,4 +26,3 @@ landing_dev.aztech-ai.com {
     # Django
     reverse_proxy app:8000
 }
-log { output stdout }

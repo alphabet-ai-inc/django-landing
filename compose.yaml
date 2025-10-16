@@ -11,7 +11,7 @@ services:
     ports:
       - "${DATABASE_EXTERNAL_PORT}:${DATABASE_PORT}"
     networks:
-      - django-landing-network
+      - network
 
   app:
     container_name: django-landing-app
@@ -27,7 +27,7 @@ services:
       - db
       - migrations
     networks:
-      - django-landing-network
+      - network
 
   migrations:
     container_name: django-landing-migrations
@@ -40,11 +40,11 @@ services:
     volumes:
       - ./:/app
     networks:
-      - django-landing-network
+      - network
 
 volumes:
   portainer_data:
 
 networks:
-  django-landing-network:
+  network:
     driver: bridge

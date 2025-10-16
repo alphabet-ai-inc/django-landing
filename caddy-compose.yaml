@@ -1,0 +1,26 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: django-landing-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./staticfiles:/app/staticfiles:ro
+      - ./media:/app/media:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - django-landing-network
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  django-landing-network:
+    external: true

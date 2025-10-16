@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-# Migrations
-echo "🔄 Running migrations..."
-python manage.py migrate --noinput
+## Migrations
+#echo "🔄 Running migrations..."
+#python manage.py migrate --noinput
 
 # Collect static
 echo "📦 Collecting static files..."

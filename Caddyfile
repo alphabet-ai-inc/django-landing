@@ -3,7 +3,7 @@
     auto_https off
 }
 
-landing_dev.aztech-ai.com {
+landing-dev.aztech-ai.com {
     log {
         output stdout
     }

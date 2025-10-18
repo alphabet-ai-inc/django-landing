@@ -27,4 +27,4 @@ github_token_vault_path = "secret/github/github_token"
 github_owner            = "alphabet-ai-inc"
 
 domain_name = "aztech-ai.com"
-domain_prefix = "landing_dev"
+domain_prefix = "landing-dev"

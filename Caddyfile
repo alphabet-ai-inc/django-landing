@@ -1,6 +1,6 @@
 {
     email jpassano@gmail.com
-    auto_https off
+#    auto_https off
 }
 
 landing-dev.aztech-ai.com {

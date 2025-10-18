@@ -137,3 +137,14 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'landing/static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DEFAULT_FROM_EMAIL = 'test@example.com'
+
+SECURE_CSRF_COOKIE_SECURE = True
+SECURE_CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+CSRF_TRUSTED_ORIGINS = [
+    f"http://{host.strip()}" for host in os.getenv('ALLOWED_HOSTS', '').split(',') if host.strip()
+] + [
+    f"https://{host.strip()}" for host in os.getenv('ALLOWED_HOSTS', '').split(',') if host.strip()
+]

@@ -12,9 +12,9 @@ echo "💻 VM_IP:  $VM_IP"
 # Check values
 if [ -z "$DOMAIN" ] || [ -z "$VM_IP" ]; then
     echo "❌ Error: Unable to get DOMAIN or VM_IP from env variables"
-    echo "   Verify that outputs.tf contains:"
-    echo "   output \"domain\" { value = module.linode_domain.domain_name }"
-    echo "   output \"ips\" { value = module.linode_instances.instance_ips }"
+    echo "   Set environment variables:"
+    echo "   export DOMAIN=<your_domain>"
+    echo "   export VM_IP=<your_ip>"
     exit 1
 fi
 

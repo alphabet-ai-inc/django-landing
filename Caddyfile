@@ -8,14 +8,14 @@ landing-dev.aztech-ai.com {
         output stdout
     }
 
-    # Static files - убираем /static/ из пути
+    # Static files
     handle /static/* {
         root * /app/staticfiles
         uri strip_prefix /static
         file_server
     }
 
-    # Media files - убираем /media/ из пути
+    # Media files
     handle /media/* {
         root * /app/media
         uri strip_prefix /media

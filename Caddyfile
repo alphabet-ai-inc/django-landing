@@ -1,28 +1,27 @@
 {
     email jpassano@gmail.com
-    auto_https disable_redirects
+    auto_https off
 }
 
 landing_dev.aztech-ai.com {
     log {
         output stdout
     }
-    # Static files
-    @static {
-        path /static/*
-    }
-    handle @static {
+
+    # Static files - убираем /static/ из пути
+    handle /static/* {
         root * /app/staticfiles
+        uri strip_prefix /static
         file_server
     }
-    # Media files
-    @media {
-        path /media/*
-    }
-    handle @media {
+
+    # Media files - убираем /media/ из пути
+    handle /media/* {
         root * /app/media
+        uri strip_prefix /media
         file_server
     }
+
     # Django
     reverse_proxy app:8000
 }

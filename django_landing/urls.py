@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 
+import landing.views
 from django_landing import settings
 
 urlpatterns = [
+    path('', landing.views.main_page),
     path('admin/', admin.site.urls),
     path('landing/', include('landing.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -21,7 +21,9 @@ dependencies = [
     "lxml (>=6.0.2,<7.0.0)",
     "gunicorn (>=23.0.0,<24.0.0)",
     "psycopg2-binary (>=2.9.11,<3.0.0)",
-    "uvicorn (>=0.37.0,<0.38.0)"
+    "uvicorn (>=0.37.0,<0.38.0)",
+    "psycopg-binary (>=3.2.10,<4.0.0)",
+    "psycopg (>=3.2.10,<4.0.0)"
 ]
 
 

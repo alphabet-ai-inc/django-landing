@@ -85,7 +85,7 @@ DATABASES = {
         'USER': env('DATABASE_USER'),
         'PASSWORD': env('DATABASE_PASSWORD'),
         'HOST': env('DATABASE_HOST'),
-        'PORT': env.int('DATABASE_PORT', 5432),
+        'PORT': env.int('DATABASE_CONNECT_PORT', 5432),
         'CONN_MAX_AGE': 300,
     },
 }

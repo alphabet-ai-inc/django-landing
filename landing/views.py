@@ -5,10 +5,15 @@ from django.core.mail import send_mail
 from django.contrib import messages
 
 
+def main_page(request):
+    return render(request, 'index.html')
+
+
 def page_view(request, slug):
     page = get_object_or_404(Page, slug=slug)
     root_elements = PageElement.objects.filter(page=page)
     return render(request, page.template, {'page': page, 'root_elements': root_elements})
+
 
 def signup_form(request, slug):
     if request.method == 'POST':

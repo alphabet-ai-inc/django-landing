@@ -24,6 +24,6 @@ dig +short landing_dev.aztech-ai.com
 run:
 ```shell
 export DOMAIN=landing_dev.aztech-ai.com
-export VM_IP=172.239.52.7
+export VM_IP=172.239.39.13
 ./run_caddy
 ```

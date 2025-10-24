@@ -1,0 +1,17 @@
+{% load mptt_tags %}
+{% if edit_mode %}
+<div
+    data-element-id="{{ element.id }}"
+    data-has-children="{% if element.children.exists %}true{% else %}false{% endif %}"
+    data-element-type="{{ element.type }}"
+    class="editor-element"
+    style="position: relative;"
+>
+{% endif %}
+
+<{{ tag }}{% if css_classes %} class="{{ css_classes }}"{% endif %}{{ html_attrs }}{{ style_str }}>
+    {{ content_html|safe }}
+    {{ children_html|safe }}
+</{{ tag }}>
+
+{% if edit_mode %}</div>{% endif %}

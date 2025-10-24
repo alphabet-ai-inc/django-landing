@@ -1,24 +1,28 @@
-```django
-  {% extends 'base.html' %}
-  {% load mptt_tags element_tags static %}
+{% extends 'base.html' %}
+{% load mptt_tags element_tags static %}
 
-  {% block head %}
-      {% for css_file in page.css_files %}
-          <link rel="stylesheet" href="{% static css_file %}">
-      {% endfor %}
-  {% endblock %}
+{% block head %}
+    {% for css_file in page.css_files %}
+        {% if css_file|slice:":4" == "http" or css_file|slice:":5" == "https" %}
+            <link rel="stylesheet" href="{{ css_file }}">
+        {% else %}
+            <link rel="stylesheet" href="{% static css_file %}">
+        {% endif %}
+    {% endfor %}
+    {% if edit_mode %}
+        <link rel="stylesheet" href="{% static 'css/editor.css' %}">
+    {% endif %}
+{% endblock %}
 
-  {% block content %}
+{% block content %}
+    {% csrf_token %}
+    {% if edit_mode %}
+        <script src="{% static 'js/editor.js' %}"></script>
+    {% endif %}
+
     {% spaceless %}
-      {% recursetree root_elements %}
-          <!-- {{ node.get_tag }}{% if node.css_classes %} class="{{ node.css_classes }}{% if node.type == 'grid' %} grid grid-cols-{{ node.props.columns }}{% endif %}"{% endif %}{% for key, value in node.html_attrs.items %} {{ key }}="{{ value }}"{% endfor %} -->
-          {% with element=node template_path=node|get_partial_template %}
-              {% include template_path %}
-          {% endwith %}
-          {% if not node.is_leaf_node and node.type not in 'pageheader,container,card,grid,section,list,form' %}
-              {{ children }}
-          {% endif %}
-          </{{ node.get_tag }}>
-      {% endrecursetree %}
+        {% recursetree root_elements %}
+            {% render_element element=node %}
+        {% endrecursetree %}
     {% endspaceless %}
-  {% endblock %}
+{% endblock %}

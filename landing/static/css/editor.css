@@ -1,0 +1,104 @@
+/* 🔥 Высокая специфичность + dotted borders */
+.editor-element {
+    position: relative;
+<!--
+    display: block !important;
+    max-width: 100% !important;
+-->
+}
+
+.editor-border {
+    position: absolute !important;
+    top: -2px !important;
+    left: -2px !important;
+    right: -2px !important;
+    bottom: -2px !important;
+    pointer-events: none !important;
+    z-index: 9999 !important;
+    opacity: 0 !important;
+    transition: all 0.2s ease !important;
+    border-radius: 4px !important;
+    border-style: dotted !important;
+    border-width: 2px !important;
+}
+
+/* 🔥 ТОЧНЫЙ hover - только для прямого потомка */
+div.editor-element:hover > div.editor-border.leaf {
+    opacity: 1 !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2) !important;
+}
+
+div.editor-element:hover > div.editor-border.non-leaf {
+    opacity: 1 !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2) !important;
+}
+
+.editor-controls {
+    position: absolute !important;
+    top: -12px !important;
+    right: -12px !important;
+    display: flex !important;
+    gap: 4px !important;
+    opacity: 0 !important;
+    transition: all 0.2s ease !important;
+    pointer-events: none !important;
+    z-index: 10000 !important;
+}
+
+/* 🔥 ТОЧНЫЙ hover для controls */
+div.editor-element:hover > div.editor-controls {
+    opacity: 1 !important;
+    pointer-events: all !important;
+}
+
+.editor-control {
+    width: 32px !important;
+    height: 32px !important;
+    background: rgba(255,255,255,0.95) !important;
+    border: 2px solid !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.editor-control:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+}
+
+.editor-edit { border-color: #3b82f6 !important; background: #3b82f6 !important; color: white !important; }
+.editor-config { border-color: #10b981 !important; background: #10b981 !important; color: white !important; }
+.editor-delete { border-color: #ef4444 !important; background: #ef4444 !important; color: white !important; }
+
+.editor-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.5) !important; /* Полупрозрачный фон */
+    z-index: 10001 !important; /* Выше всех элементов редактора */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.editor-modal-content {
+    background: white !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+    max-width: 500px !important;
+    width: 90% !important;
+    position: relative !important;
+    transform: translate(0, 0) !important; /* Сбрасываем любые трансформации */
+}

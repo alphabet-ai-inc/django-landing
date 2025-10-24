@@ -21,9 +21,10 @@ class CSSProcessor:
         self.static_base = static_base
         self.page_slug = page_slug
         cssutils.log.setLevel('ERROR')  # Suppress warnings
+        self.base_domain = urlparse(base_url).netloc
 
     def download_css_files(self, soup):
-        """Download all CSS files from the page."""
+        """Download CSS files from the page or keep external URLs."""
         css_files = []
         links = soup.find_all('link', rel='stylesheet')
 
@@ -33,6 +34,12 @@ class CSSProcessor:
                 continue
 
             full_url = urljoin(self.base_url, href)
+            url_domain = urlparse(full_url).netloc
+
+            if url_domain and url_domain != self.base_domain:
+                css_files.append(full_url)
+                continue
+
             try:
                 resp = requests.get(full_url, timeout=10)
                 resp.raise_for_status()
@@ -40,10 +47,11 @@ class CSSProcessor:
                 filename = os.path.basename(urlparse(full_url).path) or f"style_{len(css_files)}.css"
                 css_path = os.path.join(self.static_base, 'css', filename)
 
-                with open(css_path, 'wb') as f:
-                    f.write(resp.content)
+                # Переписываем URLs и сохраняем изменённый CSS
+                sheet = self._rewrite_css_urls(resp.text, full_url, css_path)
+                with open(css_path, 'w', encoding='utf-8') as f:
+                    f.write(sheet.cssText.decode('utf-8'))  # Сохраняем изменённый CSS
 
-                self._rewrite_css_urls(resp.text, full_url, css_path)
                 css_files.append(f"page_{self.page_slug}/css/{filename}")
 
             except Exception as e:
@@ -52,7 +60,7 @@ class CSSProcessor:
         return css_files
 
     def _rewrite_css_urls(self, css_text, css_url, css_path):
-        """Rewrite URLs in CSS to local paths."""
+        """Rewrite URLs in CSS to local paths in MEDIA_ROOT and return modified sheet."""
         sheet = cssutils.parseString(css_text)
 
         for rule in sheet:
@@ -60,17 +68,16 @@ class CSSProcessor:
                 for prop in rule.style:
                     if prop.name in ('background', 'background-image') and 'url(' in prop.value:
                         old_url = prop.value.replace('url(', '').replace(')', '').strip("'\"")
-                        old_url = urljoin(css_url, old_url)
+                        full_asset_url = urljoin(css_url, old_url)
 
-                        local_path = AssetDownloader.download_asset(
-                            old_url, self.static_base, 'images'
-                        )
+                        # Скачиваем изображение в MEDIA_ROOT
+                        image_file = AssetDownloader.download_to_media(full_asset_url, self.page_slug, 'images')
+                        if image_file:
+                            relative_path = f"images/{image_file.name}"
+                            prop.value = f"url(/media/page_{self.page_slug}/{relative_path})"
+                            print(f"Rewrote URL to: url(/media/page_{self.page_slug}/{relative_path})")
 
-                        if local_path:
-                            prop.value = f"url(/media/page_{self.page_slug}/{local_path})"
-
-        with open(css_path, 'w') as f:
-            f.write(sheet.cssText.decode('utf-8'))
+        return sheet  # Возвращаем изменённый sheet
 
 
 class AssetDownloader:

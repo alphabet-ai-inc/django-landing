@@ -23,6 +23,11 @@ class Page(models.Model):
         """Path for page static files (page_<slug>/)"""
         return f"page_{self.slug}"
 
+    @classmethod
+    def can_edit(cls, request):
+        # return True
+        return request.user.is_authenticated and request.user.is_staff
+
 class PageElement(MPTTModel):
     ELEMENT_TYPES = (
         ('body', 'Body (page)'), # tag body
@@ -89,14 +94,36 @@ class PageElement(MPTTModel):
         else:
             return f"{page_dir}/images/{os.path.basename(filename)}"
 
+    # def get_tag(self):
+    #     tag_map = {
+    #         'header': f"h{self.props.get('level', 2)}",
+    #         'text': 'p',
+    #         'image': 'img',
+    #         'container': 'div',
+    #         'list': 'ul' if not self.props.get('ordered', False) else 'ol',
+    #         'button': 'button' if not self.props.get('href') else 'a',
+    #         'section': 'section',
+    #     }
+    #     return tag_map.get(self.type, 'div')  # Дефолт div для неизвестных
+
     def get_tag(self):
         tag_map = {
+            'body': 'body',
+            'pageheader': 'header',
             'header': f"h{self.props.get('level', 2)}",
             'text': 'p',
             'image': 'img',
             'container': 'div',
+            'grid': 'div',
+            'card': 'div',
             'list': 'ul' if not self.props.get('ordered', False) else 'ol',
+            'list_item': 'li',
             'button': 'button' if not self.props.get('href') else 'a',
             'section': 'section',
+            'form': 'form',
+            'label': 'label',
+            'input': 'input',
+            'textarea': 'textarea',
+            'legend': 'legend',
         }
-        return tag_map.get(self.type, 'div')  # Дефолт div для неизвестных
+        return tag_map.get(self.type, 'div')

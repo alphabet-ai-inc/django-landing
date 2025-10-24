@@ -11,8 +11,19 @@ def main_page(request):
 
 def page_view(request, slug):
     page = get_object_or_404(Page, slug=slug)
-    root_elements = PageElement.objects.filter(page=page)
-    return render(request, page.template, {'page': page, 'root_elements': root_elements})
+    root_elements = PageElement.objects.filter(page=page, parent=None)  # Только корневые элементы
+    can_edit_page = Page.can_edit(request)
+    edit_mode = request.GET.get('edit') == '1' and can_edit_page
+
+    context = {
+        'page': page,
+        'root_elements': root_elements,
+        'can_edit': can_edit_page,
+        'edit_mode': edit_mode,
+        'element_data': {}  # Для хранения данных элементов при редактировании
+    }
+
+    return render(request, page.template, context)
 
 
 def signup_form(request, slug):

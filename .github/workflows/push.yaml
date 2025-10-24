@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Condition to run on merge (comment for testing)
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
 
     steps:
     - name: Checkout code

@@ -45,7 +45,7 @@ jobs:
         export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
         
         # Get data from Vault
-        vault kv get -format=json secret/authserver/dev/env > vault_data.json
+        vault kv get -format=json secret/django_landing/dev > vault_data.json
         
         # Convert JSON to .env format
         cat vault_data.json | jq -r '.data.data | to_entries[] | "\(.key)=\(.value)"' > .env

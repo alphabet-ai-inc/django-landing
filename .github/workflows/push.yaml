@@ -1,0 +1,122 @@
+name: Deploy to Development Environment
+
+on:
+  push:
+    branches:
+    - '**'
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+
+    # Condition to run on merge (comment for testing)
+    if: github.event.pull_request.merged == true
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install Vault CLI
+      run: |
+        wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+        sudo apt update && sudo apt install vault
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SERVER_IPS }} >> ~/.ssh/known_hosts
+
+    - name: Debug SSH Private Key
+      run: |
+        echo "SSH private key length: ${#SSH_PRIVATE_KEY} characters"
+        echo "SSH private key starts with: ${SSH_PRIVATE_KEY:0:20}..."
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Fetch Environment Variables from Vault
+      run: |
+        export VAULT_ADDR=${{ secrets.VAULT_ADDR }}
+        export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
+        
+        # Get data from Vault
+        vault kv get -format=json secret/authserver/dev/env > vault_data.json
+        
+        # Convert JSON to .env format
+        cat vault_data.json | jq -r '.data.data | to_entries[] | "\(.key)=\(.value)"' > .env
+        
+        echo "Generated .env file:"
+        cat .env
+
+    - name: Deploy to servers
+      run: |
+        IFS=',' read -ra SERVERS <<< "${{ secrets.SERVER_IPS }}"
+        echo ${{ secrets.SERVER_IPS }}
+        for server in "${SERVERS[@]}"; do
+          echo "SSH command: ssh -o StrictHostKeyChecking=no root@$server"
+        done
+
+        for server in "${SERVERS[@]}"; do
+          echo "Deploying to server: $server"
+          
+          # Connect to the server and perform deployment
+          ssh -o StrictHostKeyChecking=no root@$server << 'EOF'
+            set -e
+            
+            # Go to the application directory
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # Updating code from repository
+            echo "Updating repository..."
+            git pull origin main
+            
+            # Checking the existence and status of a git repository
+            if [ ! -d ".git" ]; then
+              echo "Error: Not a git repository. Please ensure the directory contains a valid git repository."
+              exit 1
+            fi
+            
+            echo "Repository updated successfully"
+        EOF
+          
+          # Copy the .env file to the server
+#          echo "Copying .env file to server: $server"
+#          scp -o StrictHostKeyChecking=no .env root@$server:${{ secrets.DEPLOY_PATH }}/.env
+          
+          # We execute the deploy command
+          ssh -o StrictHostKeyChecking=no root@$server << 'EOF'
+            set -e
+            
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # Check for the presence of deploy.sh and perform the appropriate actions
+            if [ -f "deploy.sh" ]; then
+              echo "Found deploy.sh, executing..."
+              chmod +x deploy.sh
+              ./deploy.sh
+            else
+              echo "deploy.sh not found, running docker compose up -d..."
+              docker compose up -d
+            fi
+            
+            echo "Deployment completed successfully"
+        EOF
+          
+          echo "Deployment to $server completed"
+        done
+
+    - name: Deployment Summary
+      run: |
+        echo "✅ Deployment completed successfully!"
+        echo "📋 Deployment Summary:"
+        echo "   - Environment: dev"
+        echo "   - Servers: ${{ secrets.SERVER_IPS }}"
+        echo "   - Deploy path: ${{ secrets.DEPLOY_PATH }}"
+        echo "   - Repository updated via git pull"
+        echo "   - Environment variables updated from Vault"
+        echo "   - Services restarted"

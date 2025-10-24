@@ -83,11 +83,7 @@ jobs:
             
             echo "Repository updated successfully"
         EOF
-          
-          # Copy the .env file to the server
-#          echo "Copying .env file to server: $server"
-#          scp -o StrictHostKeyChecking=no .env root@$server:${{ secrets.DEPLOY_PATH }}/.env
-          
+        
           # We execute the deploy command
           ssh -o StrictHostKeyChecking=no root@$server << 'EOF'
             set -e
